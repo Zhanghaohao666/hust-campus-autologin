@@ -294,22 +294,9 @@ def _collect_campus_hints(config) -> list[str]:
 
 
 def _read_windows_proxy() -> str:
-    try:
-        result = run_hidden(
-            [
-                "powershell.exe",
-                "-NoProfile",
-                "-Command",
-                "Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings' | Select-Object ProxyEnable,ProxyServer | Format-List",
-            ],
-            capture_output=True,
-            text=True,
-            timeout=3,
-            check=False,
-        )
-        return result.stdout.strip()
-    except Exception:
-        return ""
+    from campus_autologin.gui_support import read_windows_proxy
+
+    return read_windows_proxy()
 
 
 if __name__ == "__main__":
