@@ -6,6 +6,8 @@ import getpass
 from dataclasses import dataclass
 from pathlib import Path
 
+from campus_autologin.process import run_hidden
+
 
 DEFAULT_TASK_NAME = "HUST Campus Autologin"
 
@@ -107,25 +109,23 @@ def build_status_command(task_name: str = DEFAULT_TASK_NAME) -> list[str]:
 
 
 def install_task(task_name: str = DEFAULT_TASK_NAME) -> subprocess.CompletedProcess:
-    return subprocess.run(build_install_command(task_name), capture_output=True, text=True)
+    return run_hidden(build_install_command(task_name), capture_output=True, text=True)
 
 
 def uninstall_task(task_name: str = DEFAULT_TASK_NAME) -> subprocess.CompletedProcess:
-    return subprocess.run(
-        build_uninstall_command(task_name), capture_output=True, text=True
-    )
+    return run_hidden(build_uninstall_command(task_name), capture_output=True, text=True)
 
 
 def start_task(task_name: str = DEFAULT_TASK_NAME) -> subprocess.CompletedProcess:
-    return subprocess.run(build_start_command(task_name), capture_output=True, text=True)
+    return run_hidden(build_start_command(task_name), capture_output=True, text=True)
 
 
 def stop_task(task_name: str = DEFAULT_TASK_NAME) -> subprocess.CompletedProcess:
-    return subprocess.run(build_stop_command(task_name), capture_output=True, text=True)
+    return run_hidden(build_stop_command(task_name), capture_output=True, text=True)
 
 
 def task_status(task_name: str = DEFAULT_TASK_NAME) -> subprocess.CompletedProcess:
-    return subprocess.run(build_status_command(task_name), capture_output=True, text=True)
+    return run_hidden(build_status_command(task_name), capture_output=True, text=True)
 
 
 def _escape_ps_single_quoted(value: str) -> str:

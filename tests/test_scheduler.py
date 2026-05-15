@@ -9,6 +9,7 @@ from campus_autologin.scheduler import (
     build_stop_command,
     build_uninstall_command,
     build_watch_action,
+    install_task,
 )
 
 
@@ -78,3 +79,19 @@ def test_build_start_stop_and_status_commands_target_task_name():
         "-Command",
         "Get-ScheduledTask -TaskName 'HUST Campus Autologin' | Select-Object TaskName,State | Format-List",
     ]
+
+
+def test_install_task_uses_hidden_subprocess_runner(monkeypatch):
+    calls = []
+
+    def fake_run_hidden(command, **kwargs):
+        calls.append((command, kwargs))
+        return subprocess.CompletedProcess(command, 0, stdout="ok", stderr="")
+
+    monkeypatch.setattr("campus_autologin.scheduler.run_hidden", fake_run_hidden)
+
+    result = install_task("HUST Campus Autologin")
+
+    assert result.returncode == 0
+    assert calls[0][0][:3] == ["powershell.exe", "-NoProfile", "-Command"]
+    assert calls[0][1] == {"capture_output": True, "text": True}

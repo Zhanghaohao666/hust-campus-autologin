@@ -95,6 +95,11 @@ def completed_process_to_result(
         output = f"退出码 {result.returncode}"
     if result.returncode == 0:
         return UiOperationResult(True, f"{action_label}成功: {output}")
+    if _is_missing_scheduled_task_error(output):
+        return UiOperationResult(
+            False,
+            f"{action_label}失败: 还没有安装自动重连任务，请先点击“安装开机自启”。",
+        )
     return UiOperationResult(False, f"{action_label}失败: {output}")
 
 
@@ -120,3 +125,10 @@ def stop_autologin() -> UiOperationResult:
 
 def get_service_status() -> UiOperationResult:
     return run_service_action("查询自动重连状态", task_status)
+
+
+def _is_missing_scheduled_task_error(output: str) -> bool:
+    return (
+        "ScheduledTask" in output
+        and ("0x80070002" in output or "找不到指定的文件" in output)
+    )

@@ -8,8 +8,8 @@ The build script creates:
 
 - `dist/windows-portable/HUSTCampusAutologin.exe`
 - `dist/windows-portable/HUSTCampusAutologinCLI.exe`
-- `dist/HUSTCampusAutologin-0.2.0-windows-portable.zip`
-- `dist/HUSTCampusAutologinSetup-0.2.0.exe`
+- `dist/HUSTCampusAutologin-0.2.1-windows-portable.zip`
+- `dist/HUSTCampusAutologinSetup-0.2.1.exe`
 
 `HUSTCampusAutologin.exe` is the desktop UI. Double-clicking it opens the configuration and operations window.
 

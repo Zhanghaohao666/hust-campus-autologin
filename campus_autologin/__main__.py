@@ -18,6 +18,7 @@ from campus_autologin.logs import tail_lines
 from campus_autologin.network_probe import ProbeStatus, probe_connectivity
 from campus_autologin.notifier import Notifier
 from campus_autologin.portal_url import parse_portal_url
+from campus_autologin.process import run_hidden
 from campus_autologin.scheduler import install_task, uninstall_task
 from campus_autologin.watcher import WatchRunner, default_sleep
 
@@ -108,7 +109,7 @@ def run_service_command(command: str) -> int:
         elif command == "uninstall-service":
             result = uninstall_task()
         else:
-            result = subprocess.run(
+            result = run_hidden(
                 [
                     "powershell.exe",
                     "-NoProfile",
@@ -268,7 +269,7 @@ def _base_from_portal_url(portal_url: str | None) -> str | None:
 def _collect_campus_hints(config) -> list[str]:
     hints: list[str] = []
     try:
-        result = subprocess.run(
+        result = run_hidden(
             ["powershell.exe", "-NoProfile", "-Command", "Get-NetConnectionProfile | Select-Object -ExpandProperty Name"],
             capture_output=True,
             text=True,
@@ -279,7 +280,7 @@ def _collect_campus_hints(config) -> list[str]:
     except Exception:
         pass
     try:
-        result = subprocess.run(
+        result = run_hidden(
             ["ipconfig", "/all"],
             capture_output=True,
             text=True,
@@ -294,7 +295,7 @@ def _collect_campus_hints(config) -> list[str]:
 
 def _read_windows_proxy() -> str:
     try:
-        result = subprocess.run(
+        result = run_hidden(
             [
                 "powershell.exe",
                 "-NoProfile",

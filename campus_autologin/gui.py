@@ -8,6 +8,7 @@ from tkinter import messagebox
 from tkinter.scrolledtext import ScrolledText
 from typing import Callable, TypeVar
 
+from campus_autologin import __version__
 from campus_autologin.config import AppConfig, load_config
 from campus_autologin.credentials import CredentialError, read_password_auto
 from campus_autologin.gui_support import (
@@ -23,6 +24,7 @@ from campus_autologin.gui_support import (
     uninstall_autostart,
 )
 from campus_autologin.logging_setup import setup_logging
+from campus_autologin.process import run_hidden
 
 
 T = TypeVar("T")
@@ -146,7 +148,7 @@ class CampusAutologinApp:
         footer.pack(side="bottom", fill="x", padx=22, pady=22)
         tk.Label(
             footer,
-            text="v0.2.0 UI Preview",
+            text=f"v{__version__}",
             fg="#b9b9f9",
             bg=Palette.brand_dark,
             font=("Consolas", 9, "normal"),
@@ -753,7 +755,7 @@ def _read_windows_proxy() -> str:
     if os.name != "nt":
         return ""
     try:
-        result = subprocess.run(
+        result = run_hidden(
             [
                 "powershell.exe",
                 "-NoProfile",

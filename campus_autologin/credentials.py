@@ -6,6 +6,8 @@ import subprocess
 import tomllib
 from pathlib import Path
 
+from campus_autologin.process import run_hidden
+
 
 _NATIVE_PATH = type(Path.cwd())
 
@@ -30,7 +32,7 @@ def parse_powershell_secret(stdout: str) -> str | None:
 
 def store_password(target: str, username: str, password: str) -> None:
     command = build_cmdkey_command(target, username, password)
-    result = subprocess.run(command, capture_output=True, text=True, check=False)
+    result = run_hidden(command, capture_output=True, text=True, check=False)
     if result.returncode != 0:
         raise CredentialError(result.stderr.strip() or result.stdout.strip())
 
@@ -84,7 +86,7 @@ if ([CredMan]::CredRead("{target}", 1, 0, [ref]$ptr)) {{
   }}
 }}
 """
-    result = subprocess.run(
+    result = run_hidden(
         ["powershell.exe", "-NoProfile", "-Command", script],
         capture_output=True,
         text=True,

@@ -94,6 +94,22 @@ def test_completed_process_to_result_prefers_stdout_and_marks_returncode():
     assert failed_result.message == "安装开机自启失败: denied"
 
 
+def test_completed_process_to_result_explains_missing_scheduled_task():
+    raw_error = (
+        "Start-ScheduledTask : 系统找不到指定的文件。\n"
+        "+ Start-ScheduledTask -TaskName 'HUST Campus Autologin'\n"
+        "+ FullyQualifiedErrorId : HRESULT 0x80070002,Start-ScheduledTask"
+    )
+
+    result = completed_process_to_result(
+        "启动自动重连",
+        subprocess.CompletedProcess(["cmd"], 1, stdout="", stderr=raw_error),
+    )
+
+    assert result.ok is False
+    assert result.message == "启动自动重连失败: 还没有安装自动重连任务，请先点击“安装开机自启”。"
+
+
 def test_run_service_action_uses_injected_runner():
     calls = []
 
