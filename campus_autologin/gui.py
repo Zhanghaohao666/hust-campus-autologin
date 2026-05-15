@@ -176,6 +176,10 @@ class RoundedCard(tk.Canvas):
         self._inner = tk.Frame(self, bg=bg)
         self._win = self.create_window(0, 0, window=self._inner, anchor="nw", tags="inner")
         self.bind("<Configure>", self._on_resize)
+        self._inner.bind("<Configure>", self._on_inner_resize)
+
+    def _on_inner_resize(self, event):
+        self.configure(height=event.height + 2)
 
     def _on_resize(self, event):
         w, h = event.width, event.height
@@ -185,7 +189,7 @@ class RoundedCard(tk.Canvas):
             fill=self._bg, outline=self._border, width=1, tags="bg",
         )
         self.tag_lower("bg")
-        self.itemconfigure(self._win, width=w - 2, height=h - 2)
+        self.itemconfigure(self._win, width=w - 2)
 
     @property
     def inner(self) -> tk.Frame:
