@@ -1,0 +1,22 @@
+[project]
+name = "hust-campus-autologin"
+version = "0.1.0"
+description = "HUST campus network eportal auto-login helper for Windows and Linux"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+  "requests>=2.31",
+]
+
+[project.scripts]
+campus-autologin = "campus_autologin.__main__:main"
+
+[project.optional-dependencies]
+notify = ["winotify>=1.1"]
+linux = []
+test = ["pytest>=7"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

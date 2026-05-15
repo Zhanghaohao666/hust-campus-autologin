@@ -1,0 +1,37 @@
+﻿[account]
+username = "<student-id>"
+credential_target = "hust-campus-autologin"
+
+[portal]
+base_urls = [
+  "http://172.18.18.60:8080/eportal",
+  "http://172.18.18.61:8080/eportal"
+]
+probe_urls = [
+  "http://www.msftconnecttest.com/connecttest.txt",
+  "http://edge-http.microsoft.com/captiveportal/generate_204",
+  "http://connect.rom.miui.com/generate_204",
+  "http://wifi.vivo.com.cn/generate_204"
+]
+campus_ssid_patterns = [
+  "HUST_WIRELESS",
+  "HUST_WIRELESS_2.4G"
+]
+manual_login_url = ""
+last_query_string = ""
+last_query_string_updated_at = ""
+
+[watch]
+interval_seconds = 30
+max_backoff_seconds = 300
+probe_timeout_seconds = 5
+login_timeout_seconds = 10
+querystring_cache_ttl_seconds = 30
+
+[logging]
+level = "INFO"
+
+[notification]
+enabled = true
+notify_login_success = true
+notify_failure_threshold = 3
