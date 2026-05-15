@@ -15,7 +15,7 @@
 
 ### Windows
 
-见 [docs/windows-source.md](docs/windows-source.md)。
+源码运行见 [docs/windows-source.md](docs/windows-source.md)。Windows portable exe 和 NSIS 安装包构建见 [docs/windows-package.md](docs/windows-package.md)。
 
 ```powershell
 python -m pip install -e ".[test,notify]"
