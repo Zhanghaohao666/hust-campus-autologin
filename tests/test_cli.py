@@ -10,6 +10,7 @@ def test_cli_has_public_mvp_subcommands():
 
     assert {
         "doctor",
+        "gui",
         "init",
         "set-credential",
         "login",

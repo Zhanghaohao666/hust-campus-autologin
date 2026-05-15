@@ -4,6 +4,9 @@ from pathlib import Path
 
 from campus_autologin.scheduler import (
     build_install_command,
+    build_start_command,
+    build_status_command,
+    build_stop_command,
     build_uninstall_command,
     build_watch_action,
 )
@@ -53,4 +56,25 @@ def test_build_uninstall_command_deletes_task():
         "-NoProfile",
         "-Command",
         "Unregister-ScheduledTask -TaskName 'HUST Campus Autologin' -Confirm:$false -ErrorAction SilentlyContinue",
+    ]
+
+
+def test_build_start_stop_and_status_commands_target_task_name():
+    assert build_start_command("HUST Campus Autologin") == [
+        "powershell.exe",
+        "-NoProfile",
+        "-Command",
+        "Start-ScheduledTask -TaskName 'HUST Campus Autologin'",
+    ]
+    assert build_stop_command("HUST Campus Autologin") == [
+        "powershell.exe",
+        "-NoProfile",
+        "-Command",
+        "Stop-ScheduledTask -TaskName 'HUST Campus Autologin' -ErrorAction SilentlyContinue",
+    ]
+    assert build_status_command("HUST Campus Autologin") == [
+        "powershell.exe",
+        "-NoProfile",
+        "-Command",
+        "Get-ScheduledTask -TaskName 'HUST Campus Autologin' | Select-Object TaskName,State | Format-List",
     ]

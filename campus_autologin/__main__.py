@@ -26,6 +26,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="campus-autologin")
     parser.add_argument("--config", default=None)
     subparsers = parser.add_subparsers(dest="command", required=True)
+    subparsers.add_parser("gui")
     subparsers.add_parser("doctor")
 
     init = subparsers.add_parser("init")
@@ -55,6 +56,10 @@ def main(argv: list[str] | None = None) -> int:
     config = load_config(args.config)
     logger = setup_logging(config.log_dir, config.logging.level)
 
+    if args.command == "gui":
+        from campus_autologin.gui import launch_gui
+
+        return launch_gui(args.config)
     if args.command == "doctor":
         return run_doctor(config)
     if args.command == "init":

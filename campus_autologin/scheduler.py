@@ -76,6 +76,36 @@ def build_uninstall_command(task_name: str = DEFAULT_TASK_NAME) -> list[str]:
     ]
 
 
+def build_start_command(task_name: str = DEFAULT_TASK_NAME) -> list[str]:
+    task = _escape_ps_single_quoted(task_name)
+    return [
+        "powershell.exe",
+        "-NoProfile",
+        "-Command",
+        f"Start-ScheduledTask -TaskName '{task}'",
+    ]
+
+
+def build_stop_command(task_name: str = DEFAULT_TASK_NAME) -> list[str]:
+    task = _escape_ps_single_quoted(task_name)
+    return [
+        "powershell.exe",
+        "-NoProfile",
+        "-Command",
+        f"Stop-ScheduledTask -TaskName '{task}' -ErrorAction SilentlyContinue",
+    ]
+
+
+def build_status_command(task_name: str = DEFAULT_TASK_NAME) -> list[str]:
+    task = _escape_ps_single_quoted(task_name)
+    return [
+        "powershell.exe",
+        "-NoProfile",
+        "-Command",
+        f"Get-ScheduledTask -TaskName '{task}' | Select-Object TaskName,State | Format-List",
+    ]
+
+
 def install_task(task_name: str = DEFAULT_TASK_NAME) -> subprocess.CompletedProcess:
     return subprocess.run(build_install_command(task_name), capture_output=True, text=True)
 
@@ -84,6 +114,18 @@ def uninstall_task(task_name: str = DEFAULT_TASK_NAME) -> subprocess.CompletedPr
     return subprocess.run(
         build_uninstall_command(task_name), capture_output=True, text=True
     )
+
+
+def start_task(task_name: str = DEFAULT_TASK_NAME) -> subprocess.CompletedProcess:
+    return subprocess.run(build_start_command(task_name), capture_output=True, text=True)
+
+
+def stop_task(task_name: str = DEFAULT_TASK_NAME) -> subprocess.CompletedProcess:
+    return subprocess.run(build_stop_command(task_name), capture_output=True, text=True)
+
+
+def task_status(task_name: str = DEFAULT_TASK_NAME) -> subprocess.CompletedProcess:
+    return subprocess.run(build_status_command(task_name), capture_output=True, text=True)
 
 
 def _escape_ps_single_quoted(value: str) -> str:

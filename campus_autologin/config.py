@@ -183,6 +183,43 @@ def load_config(path: str | Path | None = None) -> AppConfig:
     )
 
 
+def render_config(config: AppConfig) -> str:
+    return f"""[account]
+username = "{_toml_escape(config.account.username)}"
+credential_target = "{_toml_escape(config.account.credential_target)}"
+
+[portal]
+base_urls = {_toml_list(config.portal.base_urls)}
+probe_urls = {_toml_list(config.portal.probe_urls)}
+campus_ssid_patterns = {_toml_list(config.portal.campus_ssid_patterns)}
+manual_login_url = "{_toml_escape(config.portal.manual_login_url)}"
+last_query_string = "{_toml_escape(config.portal.last_query_string)}"
+last_query_string_updated_at = "{_toml_escape(config.portal.last_query_string_updated_at)}"
+
+[watch]
+interval_seconds = {config.watch.interval_seconds}
+max_backoff_seconds = {config.watch.max_backoff_seconds}
+probe_timeout_seconds = {config.watch.probe_timeout_seconds}
+login_timeout_seconds = {config.watch.login_timeout_seconds}
+querystring_cache_ttl_seconds = {config.watch.querystring_cache_ttl_seconds}
+
+[logging]
+level = "{_toml_escape(config.logging.level)}"
+
+[notification]
+enabled = {_toml_bool(config.notification.enabled)}
+notify_login_success = {_toml_bool(config.notification.notify_login_success)}
+notify_failure_threshold = {config.notification.notify_failure_threshold}
+"""
+
+
+def write_config(config: AppConfig, path: str | Path | None = None) -> Path:
+    config_path = Path(path) if path is not None else config.config_path
+    config_path.parent.mkdir(parents=True, exist_ok=True)
+    config_path.write_text(render_config(config), encoding="utf-8")
+    return config_path
+
+
 def render_default_config(
     username: str = "",
     interval_seconds: int = 30,
@@ -247,3 +284,18 @@ def write_default_config(
         encoding="utf-8",
     )
     return config_path
+
+
+def _toml_escape(value: str) -> str:
+    return str(value).replace("\\", "\\\\").replace('"', '\\"')
+
+
+def _toml_list(values: list[str]) -> str:
+    if not values:
+        return "[]"
+    items = ", ".join(f'"{_toml_escape(value)}"' for value in values)
+    return f"[{items}]"
+
+
+def _toml_bool(value: bool) -> str:
+    return "true" if value else "false"

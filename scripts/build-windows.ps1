@@ -1,6 +1,6 @@
 param(
     [string]$Python = "python",
-    [string]$Version = "0.1.0",
+    [string]$Version = "0.2.0",
     [switch]$SkipInstaller
 )
 
@@ -11,10 +11,12 @@ $Dist = Join-Path $Root "dist"
 $Build = Join-Path $Root "build"
 $PortableDir = Join-Path $Dist "windows-portable"
 $ExeName = "HUSTCampusAutologin.exe"
+$CliExeName = "HUSTCampusAutologinCLI.exe"
 $PortableZip = Join-Path $Dist "HUSTCampusAutologin-$Version-windows-portable.zip"
 $Installer = Join-Path $Dist "HUSTCampusAutologinSetup-$Version.exe"
 $NsisScript = Join-Path $Root "installer\windows\HUSTCampusAutologin.nsi"
 $EntryPoint = Join-Path $Root "packaging\windows\entrypoint.py"
+$GuiEntryPoint = Join-Path $Root "packaging\windows\gui_entrypoint.py"
 
 New-Item -ItemType Directory -Force -Path $Dist | Out-Null
 New-Item -ItemType Directory -Force -Path $Build | Out-Null
@@ -33,10 +35,21 @@ if (Test-Path $Installer) {
     --noconfirm `
     --clean `
     --onefile `
-    --console `
+    --windowed `
     --name "HUSTCampusAutologin" `
     --distpath $PortableDir `
-    --workpath (Join-Path $Build "pyinstaller") `
+    --workpath (Join-Path $Build "pyinstaller-gui") `
+    --specpath (Join-Path $Build "pyinstaller-spec") `
+    $GuiEntryPoint
+
+& $Python -m PyInstaller `
+    --noconfirm `
+    --clean `
+    --onefile `
+    --console `
+    --name "HUSTCampusAutologinCLI" `
+    --distpath $PortableDir `
+    --workpath (Join-Path $Build "pyinstaller-cli") `
     --specpath (Join-Path $Build "pyinstaller-spec") `
     $EntryPoint
 
@@ -75,6 +88,7 @@ if (-not $SkipInstaller) {
     & $MakensisPath `
         "/DAPP_VERSION=$Version" `
         "/DSOURCE_EXE=$(Join-Path $PortableDir $ExeName)" `
+        "/DSOURCE_CLI_EXE=$(Join-Path $PortableDir $CliExeName)" `
         "/DOUT_FILE=$Installer" `
         $NsisScript
 }

@@ -12,6 +12,7 @@ Windows 源码版适合先验证流程、二次开发，或者在打包版发布
 
 ```powershell
 python -m pip install -e ".[test,notify]"
+python -m campus_autologin gui
 python -m campus_autologin init --username <student-id>
 python -m campus_autologin set-credential --username <student-id>
 python -m campus_autologin login
@@ -19,6 +20,12 @@ python -m campus_autologin install-service
 ```
 
 `install-service` 在 Windows 上会注册任务计划程序，等价于旧命令 `install-task`。
+
+如果想用桌面 UI，不需要手动编辑配置文件，直接运行：
+
+```powershell
+python -m campus_autologin gui
+```
 
 ## Manual Portal URL
 

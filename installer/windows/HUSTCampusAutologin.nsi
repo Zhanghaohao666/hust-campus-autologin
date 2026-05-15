@@ -1,9 +1,13 @@
 !ifndef APP_VERSION
-!define APP_VERSION "0.1.0"
+!define APP_VERSION "0.2.0"
 !endif
 
 !ifndef SOURCE_EXE
 !define SOURCE_EXE "..\..\dist\windows-portable\HUSTCampusAutologin.exe"
+!endif
+
+!ifndef SOURCE_CLI_EXE
+!define SOURCE_CLI_EXE "..\..\dist\windows-portable\HUSTCampusAutologinCLI.exe"
 !endif
 
 !ifndef OUT_FILE
@@ -13,6 +17,7 @@
 !define APP_NAME "HUST Campus Autologin"
 !define COMPANY_NAME "HUST Campus Autologin contributors"
 !define EXE_NAME "HUSTCampusAutologin.exe"
+!define CLI_EXE_NAME "HUSTCampusAutologinCLI.exe"
 !define UNINSTALL_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\HUSTCampusAutologin"
 
 Name "${APP_NAME}"
@@ -31,6 +36,7 @@ UninstPage instfiles
 Section "Install"
   SetOutPath "$INSTDIR"
   File "${SOURCE_EXE}"
+  File "${SOURCE_CLI_EXE}"
   File "..\..\README.md"
   File "..\..\config.example.toml"
 
@@ -44,9 +50,7 @@ Section "Install"
   WriteUninstaller "$INSTDIR\Uninstall.exe"
 
   CreateDirectory "$SMPROGRAMS\${APP_NAME}"
-  CreateShortCut "$SMPROGRAMS\${APP_NAME}\Doctor.lnk" "$INSTDIR\${EXE_NAME}" "doctor"
-  CreateShortCut "$SMPROGRAMS\${APP_NAME}\Logs.lnk" "$INSTDIR\${EXE_NAME}" "logs --lines 80"
-  CreateShortCut "$SMPROGRAMS\${APP_NAME}\Install Service.lnk" "$INSTDIR\${EXE_NAME}" "install-service"
+  CreateShortCut "$SMPROGRAMS\${APP_NAME}\HUST Campus Autologin.lnk" "$INSTDIR\${EXE_NAME}"
   CreateShortCut "$SMPROGRAMS\${APP_NAME}\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
 
   WriteRegStr HKCU "${UNINSTALL_KEY}" "DisplayName" "${APP_NAME}"
@@ -62,9 +66,7 @@ Section "Uninstall"
   IfFileExists "$INSTDIR\${EXE_NAME}" 0 +2
     ExecWait '"$INSTDIR\${EXE_NAME}" uninstall-service'
 
-  Delete "$SMPROGRAMS\${APP_NAME}\Doctor.lnk"
-  Delete "$SMPROGRAMS\${APP_NAME}\Logs.lnk"
-  Delete "$SMPROGRAMS\${APP_NAME}\Install Service.lnk"
+  Delete "$SMPROGRAMS\${APP_NAME}\HUST Campus Autologin.lnk"
   Delete "$SMPROGRAMS\${APP_NAME}\Uninstall.lnk"
   RMDir "$SMPROGRAMS\${APP_NAME}"
 
@@ -77,6 +79,7 @@ Section "Uninstall"
   Delete "$INSTDIR\README.md"
   Delete "$INSTDIR\config.example.toml"
   Delete "$INSTDIR\${EXE_NAME}"
+  Delete "$INSTDIR\${CLI_EXE_NAME}"
   Delete "$INSTDIR\Uninstall.exe"
   RMDir "$INSTDIR"
 

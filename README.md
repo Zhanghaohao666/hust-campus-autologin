@@ -18,6 +18,7 @@
 - 自动发现 `eportal/index.jsp?...` 认证页并提取动态 `queryString`。
 - 支持 HUST eportal 当前的加密密码登录流程。
 - 直连认证接口，绕过系统代理、环境代理和 Clash Verge。
+- 提供 Windows 桌面 UI，可填写账号、密码、认证页 URL、探测间隔并查看日志。
 - 支持 Windows 便携版 exe、Windows NSIS 安装包、Windows 源码运行。
 - 支持 Ubuntu/Linux 源码运行和 `systemd --user` 常驻服务。
 - 支持手动填写完整认证页 URL 作为自动发现失败时的 fallback。
@@ -42,9 +43,10 @@ Windows 上的密码默认保存在 Windows Credential Manager。Linux 源码版
 
 到 [GitHub Releases](https://github.com/Zhanghaohao666/hust-campus-autologin/releases) 下载：
 
-- `HUSTCampusAutologinSetup-0.1.0.exe`：安装包，推荐普通用户使用。
-- `HUSTCampusAutologin-0.1.0-windows-portable.zip`：便携版压缩包，解压即可运行。
-- `HUSTCampusAutologin.exe`：单文件命令行程序。
+- `HUSTCampusAutologinSetup-0.2.0.exe`：安装包，推荐普通用户使用。
+- `HUSTCampusAutologin-0.2.0-windows-portable.zip`：便携版压缩包，解压即可运行。
+- `HUSTCampusAutologin.exe`：桌面 UI，双击即可配置和操作。
+- `HUSTCampusAutologinCLI.exe`：命令行程序，适合高级用户和排障。
 
 安装包是 per-user 安装，不需要管理员权限。默认安装到：
 
@@ -52,14 +54,16 @@ Windows 上的密码默认保存在 Windows Credential Manager。Linux 源码版
 %LOCALAPPDATA%\HUST Campus Autologin
 ```
 
-便携版解压后，在 PowerShell 中进入目录运行：
+安装包安装后，从开始菜单打开 **HUST Campus Autologin**。便携版解压后双击 `HUSTCampusAutologin.exe`。在 UI 中填写账号和密码，点击“保存配置”，再点击“测试登录”或“安装开机自启”。
+
+如果要使用命令行，在 PowerShell 中进入目录运行：
 
 ```powershell
-.\HUSTCampusAutologin.exe doctor
-.\HUSTCampusAutologin.exe init --username <student-id>
-.\HUSTCampusAutologin.exe set-credential --username <student-id>
-.\HUSTCampusAutologin.exe login
-.\HUSTCampusAutologin.exe install-service
+.\HUSTCampusAutologinCLI.exe doctor
+.\HUSTCampusAutologinCLI.exe init --username <student-id>
+.\HUSTCampusAutologinCLI.exe set-credential --username <student-id>
+.\HUSTCampusAutologinCLI.exe login
+.\HUSTCampusAutologinCLI.exe install-service
 ```
 
 `install-service` 会注册 Windows 任务计划程序，让工具开机后自动后台运行：
@@ -71,13 +75,13 @@ HUSTCampusAutologin.exe watch
 查看日志：
 
 ```powershell
-.\HUSTCampusAutologin.exe logs --lines 80
+.\HUSTCampusAutologinCLI.exe logs --lines 80
 ```
 
 卸载后台任务：
 
 ```powershell
-.\HUSTCampusAutologin.exe uninstall-service
+.\HUSTCampusAutologinCLI.exe uninstall-service
 ```
 
 ### Windows 源码运行
@@ -86,6 +90,7 @@ HUSTCampusAutologin.exe watch
 
 ```powershell
 python -m pip install -e ".[test,notify]"
+python -m campus_autologin gui
 python -m campus_autologin init --username <student-id>
 python -m campus_autologin set-credential --username <student-id>
 python -m campus_autologin login
@@ -164,6 +169,7 @@ If you use Clash Verge, a proxy, or a VPN, this tool does not turn them off or c
 - Discovers `eportal/index.jsp?...` and extracts the dynamic `queryString`.
 - Supports the current HUST eportal encrypted password flow.
 - Sends authentication requests directly, bypassing system proxies and Clash Verge.
+- Provides a Windows desktop UI for account setup, password storage, manual portal URL, interval selection, and logs.
 - Supports Windows portable exe, Windows NSIS installer, and Windows source usage.
 - Supports Ubuntu/Linux source usage and `systemd --user` service.
 - Supports a manually provided full portal URL as a fallback.
@@ -188,9 +194,10 @@ On Windows, passwords are stored in Windows Credential Manager. On Linux source 
 
 Download from [GitHub Releases](https://github.com/Zhanghaohao666/hust-campus-autologin/releases):
 
-- `HUSTCampusAutologinSetup-0.1.0.exe`: installer, recommended for most Windows users.
-- `HUSTCampusAutologin-0.1.0-windows-portable.zip`: portable zip.
-- `HUSTCampusAutologin.exe`: single-file command-line executable.
+- `HUSTCampusAutologinSetup-0.2.0.exe`: installer, recommended for most Windows users.
+- `HUSTCampusAutologin-0.2.0-windows-portable.zip`: portable zip.
+- `HUSTCampusAutologin.exe`: desktop UI; double-click to configure and operate.
+- `HUSTCampusAutologinCLI.exe`: command-line executable for advanced users and troubleshooting.
 
 The installer is per-user and does not require administrator privileges. It installs to:
 
@@ -198,14 +205,16 @@ The installer is per-user and does not require administrator privileges. It inst
 %LOCALAPPDATA%\HUST Campus Autologin
 ```
 
-For the portable zip, extract it and run:
+After installation, open **HUST Campus Autologin** from the Start Menu. For the portable zip, extract it and double-click `HUSTCampusAutologin.exe`. Enter the username and password in the UI, save settings, then test login or install autostart.
+
+For command-line usage, open PowerShell in the extracted directory and run:
 
 ```powershell
-.\HUSTCampusAutologin.exe doctor
-.\HUSTCampusAutologin.exe init --username <student-id>
-.\HUSTCampusAutologin.exe set-credential --username <student-id>
-.\HUSTCampusAutologin.exe login
-.\HUSTCampusAutologin.exe install-service
+.\HUSTCampusAutologinCLI.exe doctor
+.\HUSTCampusAutologinCLI.exe init --username <student-id>
+.\HUSTCampusAutologinCLI.exe set-credential --username <student-id>
+.\HUSTCampusAutologinCLI.exe login
+.\HUSTCampusAutologinCLI.exe install-service
 ```
 
 `install-service` registers Windows Task Scheduler to run:
@@ -217,13 +226,13 @@ HUSTCampusAutologin.exe watch
 View logs:
 
 ```powershell
-.\HUSTCampusAutologin.exe logs --lines 80
+.\HUSTCampusAutologinCLI.exe logs --lines 80
 ```
 
 Remove the background task:
 
 ```powershell
-.\HUSTCampusAutologin.exe uninstall-service
+.\HUSTCampusAutologinCLI.exe uninstall-service
 ```
 
 ### Windows Source Usage
@@ -232,6 +241,7 @@ See [docs/windows-source.md](docs/windows-source.md).
 
 ```powershell
 python -m pip install -e ".[test,notify]"
+python -m campus_autologin gui
 python -m campus_autologin init --username <student-id>
 python -m campus_autologin set-credential --username <student-id>
 python -m campus_autologin login

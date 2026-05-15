@@ -1,9 +1,14 @@
 ﻿from pathlib import Path
 
 from campus_autologin.config import (
+    AccountConfig,
     AppConfig,
+    NotificationConfig,
+    PortalConfig,
+    WatchConfig,
     default_config_path,
     load_config,
+    write_config,
     write_default_config,
 )
 
@@ -111,3 +116,53 @@ def test_default_config_path_uses_userprofile(tmp_path, monkeypatch):
     monkeypatch.setenv("USERPROFILE", str(tmp_path))
 
     assert default_config_path() == Path(tmp_path) / ".campus-autologin" / "config.toml"
+
+
+def test_write_config_roundtrips_ui_editable_values(tmp_path):
+    target = tmp_path / "config.toml"
+    config = AppConfig(
+        account=AccountConfig(username="<student-id>", credential_target="campus-test"),
+        portal=PortalConfig(
+            base_urls=["http://172.18.18.60:8080/eportal"],
+            probe_urls=["http://connect.rom.miui.com/generate_204"],
+            campus_ssid_patterns=["HUST_WIRELESS"],
+            manual_login_url="http://172.18.18.61:8080/eportal/index.jsp?wlanuserip=abc",
+            last_query_string="wlanuserip=abc",
+            last_query_string_updated_at="2026-05-15T14:10:00+08:00",
+        ),
+        watch=WatchConfig(
+            interval_seconds=45,
+            max_backoff_seconds=180,
+            probe_timeout_seconds=4,
+            login_timeout_seconds=11,
+            querystring_cache_ttl_seconds=20,
+        ),
+        notification=NotificationConfig(
+            enabled=False,
+            notify_login_success=False,
+            notify_failure_threshold=5,
+        ),
+        base_dir=tmp_path,
+        config_path=target,
+    )
+
+    write_config(config)
+    loaded = load_config(target)
+    content = target.read_text(encoding="utf-8")
+
+    assert loaded.account.username == "<student-id>"
+    assert loaded.account.credential_target == "campus-test"
+    assert loaded.portal.base_urls == ["http://172.18.18.60:8080/eportal"]
+    assert loaded.portal.probe_urls == ["http://connect.rom.miui.com/generate_204"]
+    assert loaded.portal.campus_ssid_patterns == ["HUST_WIRELESS"]
+    assert loaded.portal.manual_login_url.endswith("wlanuserip=abc")
+    assert loaded.portal.last_query_string == "wlanuserip=abc"
+    assert loaded.watch.interval_seconds == 45
+    assert loaded.watch.max_backoff_seconds == 180
+    assert loaded.watch.probe_timeout_seconds == 4
+    assert loaded.watch.login_timeout_seconds == 11
+    assert loaded.watch.querystring_cache_ttl_seconds == 20
+    assert loaded.notification.enabled is False
+    assert loaded.notification.notify_login_success is False
+    assert loaded.notification.notify_failure_threshold == 5
+    assert "password" not in content.lower()
