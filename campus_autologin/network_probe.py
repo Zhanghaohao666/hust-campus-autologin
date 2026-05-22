@@ -70,12 +70,7 @@ def probe_connectivity(
     campus_hints: list[str] | tuple[str, ...],
     manual_login_url: str = "",
 ) -> ProbeResult:
-    if not is_campus_network_hint(campus_hints):
-        return ProbeResult(
-            ProbeStatus.NOT_CAMPUS_NETWORK,
-            message="current network does not look like campus network",
-        )
-
+    has_campus_hint = is_campus_network_hint(campus_hints)
     last_error: str | None = None
     for url in probe_urls:
         try:
@@ -132,6 +127,12 @@ def probe_connectivity(
                     query_string=parsed.query_string,
                     message="using configured manual portal URL",
                 )
+
+    if not has_campus_hint:
+        return ProbeResult(
+            ProbeStatus.NOT_CAMPUS_NETWORK,
+            message="current network does not look like campus network",
+        )
 
     return ProbeResult(ProbeStatus.OFFLINE, message=last_error or "all probes failed")
 

@@ -83,8 +83,33 @@ def test_probe_connectivity_detects_captive_portal():
     assert result.query_string == "wlanuserip=abc&nasip=def"
 
 
-def test_probe_connectivity_skips_when_not_campus_network():
-    session = FakeSession([])
+def test_probe_connectivity_detects_captive_portal_without_campus_hint():
+    portal_url = "http://172.18.18.61:8080/eportal/index.jsp?wlanuserip=abc&nasip=def"
+    session = FakeSession([FakeResponse(portal_url, "<html>Campus Network</html>")])
+
+    result = probe_connectivity(
+        session=session,
+        probe_urls=["http://edge-http.microsoft.com/captiveportal/generate_204"],
+        portal_base_urls=["http://172.18.18.61:8080/eportal"],
+        timeout=5,
+        campus_hints=["Dorm router", "192.168.31.1"],
+    )
+
+    assert result.status is ProbeStatus.CAPTIVE_PORTAL
+    assert result.portal_url == portal_url
+    assert result.query_string == "wlanuserip=abc&nasip=def"
+    assert session.calls == [
+        ("http://edge-http.microsoft.com/captiveportal/generate_204", 5, True),
+    ]
+
+
+def test_probe_connectivity_returns_not_campus_only_after_probe_attempts():
+    session = FakeSession(
+        [
+            requests.Timeout("slow"),
+            requests.ConnectTimeout("no route to portal"),
+        ]
+    )
 
     result = probe_connectivity(
         session=session,
@@ -95,7 +120,10 @@ def test_probe_connectivity_skips_when_not_campus_network():
     )
 
     assert result.status is ProbeStatus.NOT_CAMPUS_NETWORK
-    assert session.calls == []
+    assert session.calls == [
+        ("http://www.msftconnecttest.com/connecttest.txt", 5, True),
+        ("http://172.18.18.61:8080/eportal/", 5, True),
+    ]
 
 
 def test_probe_connectivity_checks_portal_after_probe_timeout():
@@ -137,3 +165,24 @@ def test_probe_uses_manual_login_url_when_probes_do_not_find_portal():
     assert result.status is ProbeStatus.CAPTIVE_PORTAL
     assert result.portal_url == manual
     assert result.query_string == "wlanuserip=abc&mac=def"
+
+
+def test_probe_uses_manual_login_url_without_campus_hint():
+    session = FakeSession([requests.Timeout("slow")])
+    manual = "http://172.18.18.61:8080/eportal/index.jsp?wlanuserip=abc&mac=def"
+
+    result = probe_connectivity(
+        session=session,
+        probe_urls=["http://www.msftconnecttest.com/connecttest.txt"],
+        portal_base_urls=[],
+        timeout=5,
+        campus_hints=["Dorm router", "192.168.31.1"],
+        manual_login_url=manual,
+    )
+
+    assert result.status is ProbeStatus.CAPTIVE_PORTAL
+    assert result.portal_url == manual
+    assert result.query_string == "wlanuserip=abc&mac=def"
+    assert session.calls == [
+        ("http://www.msftconnecttest.com/connecttest.txt", 5, True),
+    ]

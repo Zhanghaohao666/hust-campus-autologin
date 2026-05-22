@@ -43,8 +43,8 @@ Windows 上的密码默认保存在 Windows Credential Manager。Linux 源码版
 
 到 [GitHub Releases](https://github.com/Zhanghaohao666/hust-campus-autologin/releases) 下载：
 
-- `HUSTCampusAutologinSetup-0.2.1.exe`：安装包，推荐普通用户使用。
-- `HUSTCampusAutologin-0.2.1-windows-portable.zip`：便携版压缩包，解压即可运行。
+- `HUSTCampusAutologinSetup-0.2.2.exe`：安装包，推荐普通用户使用。
+- `HUSTCampusAutologin-0.2.2-windows-portable.zip`：便携版压缩包，解压即可运行。
 - `HUSTCampusAutologin.exe`：桌面 UI，双击即可配置和操作。
 - `HUSTCampusAutologinCLI.exe`：命令行程序，适合高级用户和排障。
 
@@ -194,8 +194,8 @@ On Windows, passwords are stored in Windows Credential Manager. On Linux source 
 
 Download from [GitHub Releases](https://github.com/Zhanghaohao666/hust-campus-autologin/releases):
 
-- `HUSTCampusAutologinSetup-0.2.1.exe`: installer, recommended for most Windows users.
-- `HUSTCampusAutologin-0.2.1-windows-portable.zip`: portable zip.
+- `HUSTCampusAutologinSetup-0.2.2.exe`: installer, recommended for most Windows users.
+- `HUSTCampusAutologin-0.2.2-windows-portable.zip`: portable zip.
 - `HUSTCampusAutologin.exe`: desktop UI; double-click to configure and operate.
 - `HUSTCampusAutologinCLI.exe`: command-line executable for advanced users and troubleshooting.
 

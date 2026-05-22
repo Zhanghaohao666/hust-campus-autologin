@@ -1,6 +1,6 @@
 [project]
 name = "hust-campus-autologin"
-version = "0.2.1"
+version = "0.2.2"
 description = "HUST campus network eportal auto-login helper for Windows and Linux"
 readme = "README.md"
 requires-python = ">=3.11"
