@@ -8,8 +8,8 @@ The build script creates:
 
 - `dist/windows-portable/HUSTCampusAutologin.exe`
 - `dist/windows-portable/HUSTCampusAutologinCLI.exe`
-- `dist/HUSTCampusAutologin-0.2.2-windows-portable.zip`
-- `dist/HUSTCampusAutologinSetup-0.2.2.exe`
+- `dist/HUSTCampusAutologin-0.2.3-windows-portable.zip`
+- `dist/HUSTCampusAutologinSetup-0.2.3.exe`
 
 `HUSTCampusAutologin.exe` is the desktop UI. Double-clicking it opens the configuration and operations window.
 
@@ -21,6 +21,9 @@ The build script creates:
 .\HUSTCampusAutologinCLI.exe set-credential --username <student-id>
 .\HUSTCampusAutologinCLI.exe login
 .\HUSTCampusAutologinCLI.exe install-service
+.\HUSTCampusAutologinCLI.exe start-service
+.\HUSTCampusAutologinCLI.exe stop-service
+.\HUSTCampusAutologinCLI.exe restart-service
 ```
 
 When run from the packaged UI, `install-service` registers Windows Task Scheduler to launch:

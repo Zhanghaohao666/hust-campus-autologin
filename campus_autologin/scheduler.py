@@ -98,6 +98,29 @@ def build_stop_command(task_name: str = DEFAULT_TASK_NAME) -> list[str]:
     ]
 
 
+def build_stop_watch_processes_command() -> list[str]:
+    script = (
+        "$patterns = @("
+        "'*HUSTCampusAutologin* watch*', "
+        "'*-m campus_autologin watch*', "
+        "'*campus_autologin watch*'"
+        "); "
+        "Get-CimInstance Win32_Process | Where-Object { "
+        "$cmd = $_.CommandLine; "
+        "$_.ProcessId -ne $PID -and $cmd -and "
+        "($patterns | Where-Object { $cmd -like $_ }) "
+        "} | ForEach-Object { "
+        "Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue "
+        "}"
+    )
+    return [
+        "powershell.exe",
+        "-NoProfile",
+        "-Command",
+        script,
+    ]
+
+
 def build_status_command(task_name: str = DEFAULT_TASK_NAME) -> list[str]:
     task = _escape_ps_single_quoted(task_name)
     return [
@@ -109,19 +132,52 @@ def build_status_command(task_name: str = DEFAULT_TASK_NAME) -> list[str]:
 
 
 def install_task(task_name: str = DEFAULT_TASK_NAME) -> subprocess.CompletedProcess:
+    _stop_task_and_watchers(task_name)
     return run_hidden(build_install_command(task_name), capture_output=True, text=True)
 
 
 def uninstall_task(task_name: str = DEFAULT_TASK_NAME) -> subprocess.CompletedProcess:
+    _stop_task_and_watchers(task_name)
     return run_hidden(build_uninstall_command(task_name), capture_output=True, text=True)
 
 
 def start_task(task_name: str = DEFAULT_TASK_NAME) -> subprocess.CompletedProcess:
+    _stop_task_and_watchers(task_name)
     return run_hidden(build_start_command(task_name), capture_output=True, text=True)
 
 
 def stop_task(task_name: str = DEFAULT_TASK_NAME) -> subprocess.CompletedProcess:
-    return run_hidden(build_stop_command(task_name), capture_output=True, text=True)
+    result = stop_scheduled_task(task_name)
+    cleanup = stop_watch_processes()
+    return result if result.returncode != 0 else cleanup
+
+
+def restart_task(task_name: str = DEFAULT_TASK_NAME) -> subprocess.CompletedProcess:
+    _stop_task_and_watchers(task_name)
+    return run_hidden(build_start_command(task_name), capture_output=True, text=True)
+
+
+def stop_scheduled_task(task_name: str = DEFAULT_TASK_NAME) -> subprocess.CompletedProcess:
+    return run_hidden(
+        build_stop_command(task_name),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+
+def stop_watch_processes() -> subprocess.CompletedProcess:
+    return run_hidden(
+        build_stop_watch_processes_command(),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+
+def _stop_task_and_watchers(task_name: str = DEFAULT_TASK_NAME) -> None:
+    stop_scheduled_task(task_name)
+    stop_watch_processes()
 
 
 def task_status(task_name: str = DEFAULT_TASK_NAME) -> subprocess.CompletedProcess:

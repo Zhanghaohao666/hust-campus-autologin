@@ -12,6 +12,7 @@ from campus_autologin.logs import tail_lines
 from campus_autologin.process import run_hidden
 from campus_autologin.scheduler import (
     install_task,
+    restart_task,
     start_task,
     stop_task,
     task_status,
@@ -123,6 +124,10 @@ def start_autologin() -> UiOperationResult:
 
 def stop_autologin() -> UiOperationResult:
     return run_service_action("停止自动重连", stop_task)
+
+
+def restart_autologin() -> UiOperationResult:
+    return run_service_action("重启自动重连", restart_task)
 
 
 def get_service_status() -> UiOperationResult:

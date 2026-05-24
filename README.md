@@ -43,8 +43,8 @@ Windows 上的密码默认保存在 Windows Credential Manager。Linux 源码版
 
 到 [GitHub Releases](https://github.com/Zhanghaohao666/hust-campus-autologin/releases) 下载：
 
-- `HUSTCampusAutologinSetup-0.2.2.exe`：安装包，推荐普通用户使用。
-- `HUSTCampusAutologin-0.2.2-windows-portable.zip`：便携版压缩包，解压即可运行。
+- `HUSTCampusAutologinSetup-0.2.3.exe`：安装包，推荐普通用户使用。
+- `HUSTCampusAutologin-0.2.3-windows-portable.zip`：便携版压缩包，解压即可运行。
 - `HUSTCampusAutologin.exe`：桌面 UI，双击即可配置和操作。
 - `HUSTCampusAutologinCLI.exe`：命令行程序，适合高级用户和排障。
 
@@ -64,6 +64,9 @@ Windows 上的密码默认保存在 Windows Credential Manager。Linux 源码版
 .\HUSTCampusAutologinCLI.exe set-credential --username <student-id>
 .\HUSTCampusAutologinCLI.exe login
 .\HUSTCampusAutologinCLI.exe install-service
+.\HUSTCampusAutologinCLI.exe start-service
+.\HUSTCampusAutologinCLI.exe stop-service
+.\HUSTCampusAutologinCLI.exe restart-service
 ```
 
 `install-service` 会注册 Windows 任务计划程序，让工具开机后自动后台运行：
@@ -194,8 +197,8 @@ On Windows, passwords are stored in Windows Credential Manager. On Linux source 
 
 Download from [GitHub Releases](https://github.com/Zhanghaohao666/hust-campus-autologin/releases):
 
-- `HUSTCampusAutologinSetup-0.2.2.exe`: installer, recommended for most Windows users.
-- `HUSTCampusAutologin-0.2.2-windows-portable.zip`: portable zip.
+- `HUSTCampusAutologinSetup-0.2.3.exe`: installer, recommended for most Windows users.
+- `HUSTCampusAutologin-0.2.3-windows-portable.zip`: portable zip.
 - `HUSTCampusAutologin.exe`: desktop UI; double-click to configure and operate.
 - `HUSTCampusAutologinCLI.exe`: command-line executable for advanced users and troubleshooting.
 
@@ -215,6 +218,9 @@ For command-line usage, open PowerShell in the extracted directory and run:
 .\HUSTCampusAutologinCLI.exe set-credential --username <student-id>
 .\HUSTCampusAutologinCLI.exe login
 .\HUSTCampusAutologinCLI.exe install-service
+.\HUSTCampusAutologinCLI.exe start-service
+.\HUSTCampusAutologinCLI.exe stop-service
+.\HUSTCampusAutologinCLI.exe restart-service
 ```
 
 `install-service` registers Windows Task Scheduler to run:

@@ -19,7 +19,13 @@ from campus_autologin.network_probe import ProbeStatus, probe_connectivity
 from campus_autologin.notifier import Notifier
 from campus_autologin.portal_url import parse_portal_url
 from campus_autologin.process import run_hidden
-from campus_autologin.scheduler import install_task, uninstall_task
+from campus_autologin.scheduler import (
+    install_task,
+    restart_task,
+    start_task,
+    stop_task,
+    uninstall_task,
+)
 from campus_autologin.watcher import WatchRunner, default_sleep
 
 
@@ -44,9 +50,15 @@ def build_parser() -> argparse.ArgumentParser:
     logs.add_argument("--lines", type=int, default=80)
 
     subparsers.add_parser("install-service")
+    subparsers.add_parser("start-service")
+    subparsers.add_parser("stop-service")
+    subparsers.add_parser("restart-service")
     subparsers.add_parser("uninstall-service")
     subparsers.add_parser("service-status")
     subparsers.add_parser("install-task")
+    subparsers.add_parser("start-task")
+    subparsers.add_parser("stop-task")
+    subparsers.add_parser("restart-task")
     subparsers.add_parser("uninstall-task")
     return parser
 
@@ -88,10 +100,29 @@ def main(argv: list[str] | None = None) -> int:
         for line in tail_lines(config.log_dir / "watch.log", args.lines):
             print(line)
         return 0
-    if args.command in {"install-service", "uninstall-service", "service-status"}:
+    if args.command in {
+        "install-service",
+        "start-service",
+        "stop-service",
+        "restart-service",
+        "uninstall-service",
+        "service-status",
+    }:
         return run_service_command(args.command)
     if args.command == "install-task":
         result = install_task()
+        print(result.stdout or result.stderr)
+        return result.returncode
+    if args.command == "start-task":
+        result = start_task()
+        print(result.stdout or result.stderr)
+        return result.returncode
+    if args.command == "stop-task":
+        result = stop_task()
+        print(result.stdout or result.stderr)
+        return result.returncode
+    if args.command == "restart-task":
+        result = restart_task()
         print(result.stdout or result.stderr)
         return result.returncode
     if args.command == "uninstall-task":
@@ -106,6 +137,12 @@ def run_service_command(command: str) -> int:
     if os.name == "nt":
         if command == "install-service":
             result = install_task()
+        elif command == "start-service":
+            result = start_task()
+        elif command == "stop-service":
+            result = stop_task()
+        elif command == "restart-service":
+            result = restart_task()
         elif command == "uninstall-service":
             result = uninstall_task()
         else:
@@ -123,12 +160,21 @@ def run_service_command(command: str) -> int:
     else:
         from campus_autologin.linux_service import (
             install_service,
+            restart_service,
             service_status,
+            start_service,
+            stop_service,
             uninstall_service,
         )
 
         if command == "install-service":
             result = install_service()
+        elif command == "start-service":
+            result = start_service()
+        elif command == "stop-service":
+            result = stop_service()
+        elif command == "restart-service":
+            result = restart_service()
         elif command == "uninstall-service":
             result = uninstall_service()
         else:

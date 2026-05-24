@@ -4,6 +4,7 @@ from campus_autologin.config import AppConfig, load_config, write_default_config
 from campus_autologin.gui_support import (
     GuiSettings,
     completed_process_to_result,
+    restart_autologin,
     run_service_action,
     save_gui_settings,
     tail_watch_log,
@@ -122,3 +123,19 @@ def test_run_service_action_uses_injected_runner():
     assert calls == ["called"]
     assert result.ok is True
     assert result.message == "启动自动重连成功: running"
+
+
+def test_restart_autologin_uses_restart_task(monkeypatch):
+    calls = []
+
+    def fake_restart_task():
+        calls.append("restart")
+        return subprocess.CompletedProcess(["cmd"], 0, stdout="restarted\n", stderr="")
+
+    monkeypatch.setattr("campus_autologin.gui_support.restart_task", fake_restart_task)
+
+    result = restart_autologin()
+
+    assert calls == ["restart"]
+    assert result.ok is True
+    assert "restarted" in result.message

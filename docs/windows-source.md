@@ -17,6 +17,9 @@ python -m campus_autologin init --username <student-id>
 python -m campus_autologin set-credential --username <student-id>
 python -m campus_autologin login
 python -m campus_autologin install-service
+python -m campus_autologin start-service
+python -m campus_autologin stop-service
+python -m campus_autologin restart-service
 ```
 
 `install-service` 在 Windows 上会注册任务计划程序，等价于旧命令 `install-task`。

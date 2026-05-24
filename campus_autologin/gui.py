@@ -18,6 +18,7 @@ from campus_autologin.gui_support import (
     install_autostart,
     probe_connection_status,
     read_windows_proxy,
+    restart_autologin,
     save_gui_settings,
     settings_from_config,
     start_autologin,
@@ -516,6 +517,8 @@ class CampusAutologinApp:
         actions.pack(fill="x", pady=(0, 16))
         PillButton(actions, "刷新状态", self.refresh_overview, small=True).pack(side="left")
         PillButton(actions, "测试登录", self.test_login, primary=True, small=True).pack(side="left", padx=(8, 0))
+        PillButton(actions, "停止服务", self.stop_service, small=True).pack(side="left", padx=(8, 0))
+        PillButton(actions, "重启服务", self.restart_service, small=True).pack(side="left", padx=(8, 0))
         PillButton(actions, "打开配置目录", self.open_config_folder, small=True).pack(side="left", padx=(8, 0))
 
         log_card = RoundedCard(parent)
@@ -575,7 +578,7 @@ class CampusAutologinApp:
         btn_row = tk.Frame(inner, bg=Palette.canvas_card)
         btn_row.grid(row=7, column=0, columnspan=2, sticky="w", padx=24, pady=(0, 24))
         PillButton(btn_row, "保存配置", self.save_settings, primary=True).pack(side="left")
-        PillButton(btn_row, "重新读取", self.reload_settings).pack(side="left", padx=(8, 0))
+        PillButton(btn_row, "按已保存配置重启服务", self.restart_service).pack(side="left", padx=(8, 0))
 
     def _build_service_page(self, parent: tk.Frame):
         card = RoundedCard(parent)
@@ -591,6 +594,7 @@ class CampusAutologinApp:
             ("安装开机自启", self.install_service),
             ("启动自动重连", self.start_service),
             ("停止自动重连", self.stop_service),
+            ("重启自动重连", self.restart_service),
             ("取消开机自启", self.uninstall_service),
             ("查询状态", self.query_service_status),
         ]:
@@ -723,11 +727,6 @@ class CampusAutologinApp:
         self.notifications_var.set(settings.notifications_enabled)
         self.notify_success_var.set(settings.notify_login_success)
 
-    def reload_settings(self):
-        self.config = load_config(self.config_path)
-        self._load_settings_into_form()
-        self.set_status("配置已重新读取", "ok")
-
     def save_settings(self):
         try:
             interval = int(self.interval_var.get().strip())
@@ -785,12 +784,12 @@ class CampusAutologinApp:
 
     def refresh_recent_log(self):
         lines = tail_watch_log(self.config, lines=20)
-        self._write_text(self.recent_log, "\n".join(lines) if lines else "暂无日志。")
+        self._write_log_text(self.recent_log, "\n".join(lines) if lines else "暂无日志。")
 
     def refresh_logs(self):
         self.config = load_config(self.config_path)
         lines = tail_watch_log(self.config, lines=300)
-        self._write_text(self.logs_text, "\n".join(lines) if lines else "暂无日志。")
+        self._write_log_text(self.logs_text, "\n".join(lines) if lines else "暂无日志。")
         self.set_status("日志已刷新", "ok")
 
     def test_login(self):
@@ -822,6 +821,9 @@ class CampusAutologinApp:
 
     def stop_service(self):
         self._service_action("正在停止自动重连", stop_autologin)
+
+    def restart_service(self):
+        self._service_action("正在按已保存配置重启自动重连", restart_autologin)
 
     def query_service_status(self):
         self._service_action("正在查询自动重连状态", get_service_status)
@@ -912,6 +914,13 @@ class CampusAutologinApp:
         widget.configure(state="normal")
         widget.delete("1.0", "end")
         widget.insert("1.0", text)
+        widget.configure(state="disabled")
+
+    def _write_log_text(self, widget: ScrolledText, text: str):
+        widget.configure(state="normal")
+        widget.delete("1.0", "end")
+        widget.insert("1.0", text)
+        widget.see("end")
         widget.configure(state="disabled")
 
     # ── Auto Refresh ──────────────────────────────────────────────────────

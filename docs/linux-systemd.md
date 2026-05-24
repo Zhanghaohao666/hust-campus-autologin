@@ -18,6 +18,9 @@ python3 -m campus_autologin init --username <student-id> --interval 30
 python3 -m campus_autologin set-credential --username <student-id>
 python3 -m campus_autologin login
 python3 -m campus_autologin install-service
+python3 -m campus_autologin start-service
+python3 -m campus_autologin stop-service
+python3 -m campus_autologin restart-service
 ```
 
 也可以在项目目录运行：
@@ -30,6 +33,9 @@ bash scripts/install-linux.sh
 
 ```bash
 python3 -m campus_autologin service-status
+python3 -m campus_autologin start-service
+python3 -m campus_autologin stop-service
+python3 -m campus_autologin restart-service
 python3 -m campus_autologin logs --lines 80
 python3 -m campus_autologin uninstall-service
 ```

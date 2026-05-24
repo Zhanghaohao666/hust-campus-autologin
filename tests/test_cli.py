@@ -17,9 +17,15 @@ def test_cli_has_public_mvp_subcommands():
         "watch",
         "logs",
         "install-service",
+        "start-service",
+        "stop-service",
+        "restart-service",
         "uninstall-service",
         "service-status",
         "install-task",
+        "start-task",
+        "stop-task",
+        "restart-task",
         "uninstall-task",
     }.issubset(set(subcommands_action.choices))
 

@@ -57,6 +57,21 @@ def uninstall_service() -> subprocess.CompletedProcess:
     return service_status()
 
 
+def start_service() -> subprocess.CompletedProcess:
+    subprocess.run(["systemctl", "--user", "start", SERVICE_NAME], check=False)
+    return service_status()
+
+
+def stop_service() -> subprocess.CompletedProcess:
+    subprocess.run(["systemctl", "--user", "stop", SERVICE_NAME], check=False)
+    return service_status()
+
+
+def restart_service() -> subprocess.CompletedProcess:
+    subprocess.run(["systemctl", "--user", "restart", SERVICE_NAME], check=False)
+    return service_status()
+
+
 def service_status() -> subprocess.CompletedProcess:
     return subprocess.run(
         ["systemctl", "--user", "status", SERVICE_NAME, "--no-pager"],
