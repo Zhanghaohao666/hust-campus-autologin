@@ -31,6 +31,8 @@ from campus_autologin.logging_setup import setup_logging
 
 T = TypeVar("T")
 
+MANUAL_LOGIN_URL_HINT = "可留空，此项仅提供探测候选参考。"
+
 
 # ── Design Tokens (xAI Inspired) ─────────────────────────────────────────────
 
@@ -544,9 +546,14 @@ class CampusAutologinApp:
         self._dark_field(inner, "手动认证页地址", self.manual_url_var, 3)
 
         tk.Label(
+            inner, text=MANUAL_LOGIN_URL_HINT, fg=Palette.mute, bg=Palette.canvas_card,
+            font=Fonts.caption(),
+        ).grid(row=4, column=1, sticky="w", padx=24, pady=(0, 4))
+
+        tk.Label(
             inner, text="探测间隔", fg=Palette.body, bg=Palette.canvas_card,
             font=Fonts.body(),
-        ).grid(row=4, column=0, sticky="w", padx=24, pady=(12, 4))
+        ).grid(row=5, column=0, sticky="w", padx=24, pady=(12, 4))
         interval = tk.Spinbox(
             inner, from_=5, to=600, increment=5, textvariable=self.interval_var,
             width=12, bd=0, relief="flat", highlightthickness=1,
@@ -554,10 +561,10 @@ class CampusAutologinApp:
             fg=Palette.ink, bg=Palette.canvas_soft, font=Fonts.body(),
             buttonbackground=Palette.canvas_mid, insertbackground=Palette.ink,
         )
-        interval.grid(row=4, column=1, sticky="w", padx=24, pady=(12, 4))
+        interval.grid(row=5, column=1, sticky="w", padx=24, pady=(12, 4))
 
         checks = tk.Frame(inner, bg=Palette.canvas_card)
-        checks.grid(row=5, column=0, columnspan=2, sticky="ew", padx=24, pady=(12, 4))
+        checks.grid(row=6, column=0, columnspan=2, sticky="ew", padx=24, pady=(12, 4))
         for var, text in [
             (self.notifications_var, "启用桌面通知"),
             (self.notify_success_var, "登录成功时通知"),
@@ -573,10 +580,10 @@ class CampusAutologinApp:
         tk.Label(
             inner, text="密码留空时只更新配置，不改已保存密码。",
             fg=Palette.mute, bg=Palette.canvas_card, font=Fonts.caption(),
-        ).grid(row=6, column=0, columnspan=2, sticky="w", padx=24, pady=(4, 12))
+        ).grid(row=7, column=0, columnspan=2, sticky="w", padx=24, pady=(4, 12))
 
         btn_row = tk.Frame(inner, bg=Palette.canvas_card)
-        btn_row.grid(row=7, column=0, columnspan=2, sticky="w", padx=24, pady=(0, 24))
+        btn_row.grid(row=8, column=0, columnspan=2, sticky="w", padx=24, pady=(0, 24))
         PillButton(btn_row, "保存配置", self.save_settings, primary=True).pack(side="left")
         PillButton(btn_row, "按已保存配置重启服务", self.restart_service).pack(side="left", padx=(8, 0))
 
