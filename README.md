@@ -43,8 +43,8 @@ Windows 上的密码默认保存在 Windows Credential Manager。Linux 源码版
 
 到 [GitHub Releases](https://github.com/Zhanghaohao666/hust-campus-autologin/releases) 下载：
 
-- `HUSTCampusAutologinSetup-0.2.4.exe`：安装包，推荐普通用户使用。
-- `HUSTCampusAutologin-0.2.4-windows-portable.zip`：便携版压缩包，解压即可运行。
+- `HUSTCampusAutologinSetup-0.2.5.exe`：安装包，推荐普通用户使用。
+- `HUSTCampusAutologin-0.2.5-windows-portable.zip`：便携版压缩包，解压即可运行。
 - `HUSTCampusAutologin.exe`：桌面 UI，双击即可配置和操作。
 - `HUSTCampusAutologinCLI.exe`：命令行程序，适合高级用户和排障。
 
@@ -55,6 +55,8 @@ Windows 上的密码默认保存在 Windows Credential Manager。Linux 源码版
 ```
 
 安装包安装后，从开始菜单打开 **HUST Campus Autologin**。便携版解压后双击 `HUSTCampusAutologin.exe`。在 UI 中填写账号和密码，点击“保存配置”，再点击“测试登录”或“安装开机自启”。
+
+安装时可以选择创建桌面快捷方式，此项默认不勾选。
 
 如果要使用命令行，在 PowerShell 中进入目录运行：
 
@@ -197,8 +199,8 @@ On Windows, passwords are stored in Windows Credential Manager. On Linux source 
 
 Download from [GitHub Releases](https://github.com/Zhanghaohao666/hust-campus-autologin/releases):
 
-- `HUSTCampusAutologinSetup-0.2.4.exe`: installer, recommended for most Windows users.
-- `HUSTCampusAutologin-0.2.4-windows-portable.zip`: portable zip.
+- `HUSTCampusAutologinSetup-0.2.5.exe`: installer, recommended for most Windows users.
+- `HUSTCampusAutologin-0.2.5-windows-portable.zip`: portable zip.
 - `HUSTCampusAutologin.exe`: desktop UI; double-click to configure and operate.
 - `HUSTCampusAutologinCLI.exe`: command-line executable for advanced users and troubleshooting.
 
@@ -209,6 +211,8 @@ The installer is per-user and does not require administrator privileges. It inst
 ```
 
 After installation, open **HUST Campus Autologin** from the Start Menu. For the portable zip, extract it and double-click `HUSTCampusAutologin.exe`. Enter the username and password in the UI, save settings, then test login or install autostart.
+
+The installer can create a desktop shortcut, but this option is unchecked by default.
 
 For command-line usage, open PowerShell in the extracted directory and run:
 

@@ -8,8 +8,8 @@ The build script creates:
 
 - `dist/windows-portable/HUSTCampusAutologin.exe`
 - `dist/windows-portable/HUSTCampusAutologinCLI.exe`
-- `dist/HUSTCampusAutologin-0.2.4-windows-portable.zip`
-- `dist/HUSTCampusAutologinSetup-0.2.4.exe`
+- `dist/HUSTCampusAutologin-0.2.5-windows-portable.zip`
+- `dist/HUSTCampusAutologinSetup-0.2.5.exe`
 
 `HUSTCampusAutologin.exe` is the desktop UI. Double-clicking it opens the configuration and operations window.
 
@@ -64,4 +64,4 @@ The NSIS installer is per-user and does not require administrator privileges. It
 %LOCALAPPDATA%\HUST Campus Autologin
 ```
 
-It creates Start Menu shortcuts for the desktop UI and uninstall. During uninstall it also calls `uninstall-service` to remove the scheduled task if present.
+It creates Start Menu shortcuts for the desktop UI and uninstall. The desktop shortcut is optional and unchecked by default. During uninstall it also calls `uninstall-service` to remove the scheduled task if present.

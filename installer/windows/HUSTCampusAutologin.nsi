@@ -1,5 +1,5 @@
 !ifndef APP_VERSION
-!define APP_VERSION "0.2.4"
+!define APP_VERSION "0.2.5"
 !endif
 
 !ifndef SOURCE_EXE
@@ -28,12 +28,13 @@ Unicode true
 SetCompressor /SOLID lzma
 
 Page directory
+Page components
 Page instfiles
 
 UninstPage uninstConfirm
 UninstPage instfiles
 
-Section "Install"
+Section "-Install"
   SetOutPath "$INSTDIR"
   File "${SOURCE_EXE}"
   File "${SOURCE_CLI_EXE}"
@@ -62,6 +63,10 @@ Section "Install"
   WriteRegDWORD HKCU "${UNINSTALL_KEY}" "NoRepair" 1
 SectionEnd
 
+Section /o "创建桌面快捷方式" SEC_DESKTOP
+  CreateShortCut "$DESKTOP\${APP_NAME}.lnk" "$INSTDIR\${EXE_NAME}"
+SectionEnd
+
 Section "Uninstall"
   IfFileExists "$INSTDIR\${EXE_NAME}" 0 +2
     ExecWait '"$INSTDIR\${EXE_NAME}" uninstall-service'
@@ -69,6 +74,7 @@ Section "Uninstall"
   Delete "$SMPROGRAMS\${APP_NAME}\HUST Campus Autologin.lnk"
   Delete "$SMPROGRAMS\${APP_NAME}\Uninstall.lnk"
   RMDir "$SMPROGRAMS\${APP_NAME}"
+  Delete "$DESKTOP\${APP_NAME}.lnk"
 
   Delete "$INSTDIR\docs\windows-source.md"
   Delete "$INSTDIR\docs\windows-package.md"

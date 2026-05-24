@@ -32,6 +32,7 @@ from campus_autologin.logging_setup import setup_logging
 T = TypeVar("T")
 
 MANUAL_LOGIN_URL_HINT = "可留空，此项仅提供探测候选参考。"
+OVERVIEW_SERVICE_HINT = "服务启动后可以关闭本窗口，UI 仅用于查看状态和辅助操作。"
 
 
 # ── Design Tokens (xAI Inspired) ─────────────────────────────────────────────
@@ -522,6 +523,11 @@ class CampusAutologinApp:
         PillButton(actions, "停止服务", self.stop_service, small=True).pack(side="left", padx=(8, 0))
         PillButton(actions, "重启服务", self.restart_service, small=True).pack(side="left", padx=(8, 0))
         PillButton(actions, "打开配置目录", self.open_config_folder, small=True).pack(side="left", padx=(8, 0))
+
+        tk.Label(
+            parent, text=OVERVIEW_SERVICE_HINT, fg=Palette.mute, bg=Palette.canvas,
+            font=Fonts.caption(),
+        ).pack(anchor="w", pady=(0, 16))
 
         log_card = RoundedCard(parent)
         log_card.pack(fill="both", expand=True)
