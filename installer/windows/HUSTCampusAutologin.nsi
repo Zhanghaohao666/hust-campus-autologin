@@ -1,5 +1,5 @@
 !ifndef APP_VERSION
-!define APP_VERSION "0.2.3"
+!define APP_VERSION "0.2.4"
 !endif
 
 !ifndef SOURCE_EXE

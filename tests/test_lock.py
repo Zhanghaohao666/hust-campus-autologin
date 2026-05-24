@@ -1,4 +1,6 @@
 import os
+import subprocess
+import sys
 
 from campus_autologin.lock import WatchLock, WatchLockError
 
@@ -30,3 +32,12 @@ def test_watch_lock_takes_over_stale_pid(tmp_path):
 
     with WatchLock(lock_path):
         assert f"pid={os.getpid()}" in lock_path.read_text(encoding="utf-8")
+
+
+def test_pid_is_running_rejects_exited_process():
+    from campus_autologin.lock import _pid_is_running
+
+    process = subprocess.Popen([sys.executable, "-c", "pass"])
+    process.wait(timeout=5)
+
+    assert not _pid_is_running(process.pid)
